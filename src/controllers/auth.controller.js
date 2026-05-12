@@ -34,7 +34,40 @@ const login = async (req, res) => {
   }
 };
 
+const getProfile = async (req, res) => {
+  try {
+    const result = await authService.getProfile(req.user.userId);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const verify = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      valid: true,
+      user: req.user,
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      valid: false,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  getProfile,
+  verify,
 };
