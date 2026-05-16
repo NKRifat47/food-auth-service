@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   auth-db:
     image: postgres:16
@@ -11,9 +13,16 @@ services:
       - "5433:5432"
     volumes:
       - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   auth-service:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: auth-service
     restart: always
     ports:
@@ -21,10 +30,17 @@ services:
     env_file:
       - .env
     depends_on:
-      - auth-db
+      auth-db:
+        condition: service_healthy
     volumes:
       - .:/app
       - /app/node_modules
+    command: >
+      sh -c "
+      npx prisma generate &&
+      npx prisma migrate deploy &&
+      npm run dev
+      "
 
 volumes:
   auth-db-data:
