@@ -1,16 +1,21 @@
 const profileService = require("./profile.service");
+const sendResponse = require("../../../utils/sendResponse");
 
 const getProfileController = async (req, res) => {
   try {
     const result = await profileService.getProfile(req.user.userId);
 
-    res.status(200).json({
+    sendResponse({
+      res,
+      statusCode: 200,
       success: true,
       message: "Profile fetched successfully",
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    sendResponse({
+      res,
+      statusCode: 400,
       success: false,
       message: error.message,
     });
@@ -21,13 +26,17 @@ const addAddressController = async (req, res) => {
   try {
     const result = await profileService.addAddress(req.user.userId, req.body);
 
-    res.status(200).json({
+    sendResponse({
+      res,
+      statusCode: 200,
       success: true,
       message: "Address added successfully",
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
+    sendResponse({
+      res,
+      statusCode: 400,
       success: false,
       message: error.message,
     });

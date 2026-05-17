@@ -16,6 +16,19 @@ const getProfile = async (userId) => {
 };
 
 const addAddress = async (userId, payload) => {
+  const existingAddress = await prisma.userAddress.findFirst({
+    where: { userId },
+  });
+
+  if (existingAddress) {
+    return await prisma.userAddress.update({
+      where: { id: existingAddress.id },
+      data: {
+        ...payload,
+      },
+    });
+  }
+
   return await prisma.userAddress.create({
     data: {
       userId,
