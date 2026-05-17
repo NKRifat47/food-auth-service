@@ -1,10 +1,10 @@
 const bcrypt = require("bcrypt");
 
-const prisma = require("../config/prisma");
-const { generateToken } = require("../utils/jwt");
+const prisma = require("../../config/prisma");
+const { generateToken } = require("../../utils/jwt");
 
 const registerUser = async (payload) => {
-  const { name, email, password, role } = payload;
+  const { name, email, password } = payload;
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -21,7 +21,6 @@ const registerUser = async (payload) => {
       name,
       email,
       password: hashedPassword,
-      role,
     },
   });
 
@@ -64,9 +63,7 @@ const loginUser = async (payload) => {
   };
 };
 
-
-
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
 };
